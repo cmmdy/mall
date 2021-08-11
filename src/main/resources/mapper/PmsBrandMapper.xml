@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zwt.mall.mapper.PmsBrandMapper">
+
+    <resultMap type="com.zwt.mall.entity.PmsBrand" id="PmsBrandMap">
+        <result property="brandStory" column="brand_story" jdbcType="VARCHAR"/>
+        <result property="bigPic" column="big_pic" jdbcType="VARCHAR"/>
+        <result property="logo" column="logo" jdbcType="VARCHAR"/>
+        <result property="productCommentCount" column="product_comment_count" jdbcType="INTEGER"/>
+        <result property="productCount" column="product_count" jdbcType="INTEGER"/>
+        <result property="showStatus" column="show_status" jdbcType="INTEGER"/>
+        <result property="factoryStatus" column="factory_status" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="firstLetter" column="first_letter" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="id" column="id" jdbcType="INTEGER"/>
+    </resultMap>
+
+</mapper>
