@@ -1,5 +1,6 @@
 package com.zwt.mall.service;
 
+import com.zwt.mall.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -34,6 +35,6 @@ public class UserServiceImpl implements UserDetailsService {
         String encode = pw.encode("123456");
         //3.返回用户对象
 
-        return new User("admin", encode, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal"));
+        return new UserDTO("admin", encode, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal,ROLE_adb,/main.html"));
     }
 }

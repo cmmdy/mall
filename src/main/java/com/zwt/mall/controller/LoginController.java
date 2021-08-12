@@ -1,5 +1,7 @@
 package com.zwt.mall.controller;
 
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,8 @@ public class LoginController {
 
 
     @PostMapping("/toMain")
+//    @Secured("ROLE_adb")
+    @PreAuthorize("hasRole('adb')")
     public String toMain() {
         return "redirect:main.html";
     }
