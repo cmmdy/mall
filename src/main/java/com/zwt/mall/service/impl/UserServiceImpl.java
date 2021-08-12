@@ -1,4 +1,4 @@
-package com.zwt.mall.service;
+package com.zwt.mall.service.impl;
 
 import com.zwt.mall.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;

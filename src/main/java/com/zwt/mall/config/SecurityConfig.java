@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 //                .antMatchers("/login.html").permitAll()
 //                .antMatchers("/fail.html").permitAll()
-                .antMatchers("/ouath/**", "/login/**", "logout/**").permitAll()
+                .antMatchers("/oauth/**", "/login/**", "logout/**").permitAll()
 //                .antMatchers("/main.html").hasRole("adbd")
 //                .anyRequest().access("@myAccessServiceImpl.hasPermission(request,authentication)");
                 .anyRequest().authenticated()
