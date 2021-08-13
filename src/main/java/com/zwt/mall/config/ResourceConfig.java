@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableResourceServer
-public class ResourceServer extends ResourceServerConfigurerAdapter {
+public class ResourceConfig extends ResourceServerConfigurerAdapter {
 
 
     @Override

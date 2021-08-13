@@ -1,13 +1,18 @@
 package com.zwt.mall.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
+
+import javax.annotation.Resource;
 
 /**
  * @Author zhouwentao
@@ -18,6 +23,13 @@ import org.springframework.security.web.authentication.ForwardAuthenticationSucc
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 //                .antMatchers("/login.html").permitAll()
 //                .antMatchers("/fail.html").permitAll()
-                .antMatchers("/oauth/**", "/login/**", "logout/**").permitAll()
+//                .antMatchers("/oauth/**", "/login/**", "logout/**").permitAll()
 //                .antMatchers("/main.html").hasRole("adbd")
 //                .anyRequest().access("@myAccessServiceImpl.hasPermission(request,authentication)");
                 .anyRequest().authenticated()
