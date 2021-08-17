@@ -1,12 +1,18 @@
 package com.zwt.mall.config;
 
+import com.zwt.mall.components.JwtAuthenticationTokenFilter;
+import com.zwt.mall.service.UmsAdminService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -22,8 +28,12 @@ import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+    @Autowired
+    private UmsAdminService umsAdminService;
 
     @Bean
     @Override
@@ -33,33 +43,49 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //表单登录 自定义登录页面
-        http.formLogin().loginPage("/login.html")
-                .loginProcessingUrl("/login")
-                .successForwardUrl("/toMain")
-//                .successHandler(new MyAuthenticationSuccessHandler("https://www.baidu.com"))
-                .failureHandler(new MyAuthenticationFailHandler("https://www.google.com"));
 
-
-        //授权 所有请求都必须被认证(登录）
-        http.authorizeRequests()
-//                .antMatchers("/login.html").permitAll()
-//                .antMatchers("/fail.html").permitAll()
-//                .antMatchers("/oauth/**", "/login/**", "logout/**").permitAll()
-//                .antMatchers("/main.html").hasRole("adbd")
-//                .anyRequest().access("@myAccessServiceImpl.hasPermission(request,authentication)");
-                .anyRequest().authenticated()
+        http.csrf()
+                .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .formLogin().permitAll();
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, // 允许对于网站静态资源的无授权访问
+                        "/",
+                        "/*.html",
+                        "/favicon.ico",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/swagger-resources/**",
+                        "/v2/api-docs/**"
+                )
+                .permitAll()
+                .antMatchers("/admin/login", "admin/register")
+                .permitAll()
+                .antMatchers(HttpMethod.OPTIONS)
+                .permitAll()
+                //调试用
+                .antMatchers("/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
 
-        //异常处理
-        http.exceptionHandling().accessDeniedHandler(new MyAccessDeniedHandler());
 
-        http.csrf().disable();
+        //禁用缓存
+        http.headers().cacheControl();
+
+        http.addFilterBefore(jwtautofi)
+
+
     }
 
     @Bean
     public PasswordEncoder pw() {
         return new BCryptPasswordEncoder();
+    }
+
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
+        return new JwtAuthenticationTokenFilter();
     }
 }

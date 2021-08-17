@@ -1,6 +1,6 @@
 package com.zwt.mall.config;
 
-import com.zwt.mall.service.impl.UserServiceImpl;
+import com.zwt.mall.service.UmsAdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,7 +37,7 @@ public class AuthenticationServer extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UmsAdminService userDetailsService;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -79,7 +79,9 @@ public class AuthenticationServer extends AuthorizationServerConfigurerAdapter {
                 .secret(passwordEncoder.encode("123456"))
 //                .redirectUris("https://www.baidu.com")
                 .scopes("all")
-                .authorizedGrantTypes("password");
+                .accessTokenValiditySeconds(36000)
+                .refreshTokenValiditySeconds(360000)
+                .authorizedGrantTypes("password", "refresh_token");
 
     }
 

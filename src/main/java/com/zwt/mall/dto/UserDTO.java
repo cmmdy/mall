@@ -1,11 +1,15 @@
 package com.zwt.mall.dto;
 
+import com.zwt.mall.entity.UmsAdmin;
+import com.zwt.mall.entity.UmsPermission;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author zhouwentao
@@ -16,33 +20,30 @@ import java.util.List;
 
 public class UserDTO implements UserDetails {
 
-    private String username;
-    private String password;
-    private List<GrantedAuthority> grantedAuthorityList;
+    private UmsAdmin umsAdmin;
+    private List<UmsPermission> permissionList;
 
-
-    public UserDTO() {
-    }
-
-    public UserDTO(String username, String password, List<GrantedAuthority> grantedAuthorityList) {
-        this.username = username;
-        this.password = password;
-        this.grantedAuthorityList = grantedAuthorityList;
+    public UserDTO(UmsAdmin username, List<UmsPermission> grantedAuthorityList) {
+        this.umsAdmin = username;
+        this.permissionList = grantedAuthorityList;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grantedAuthorityList;
+        return permissionList.stream()
+                .filter(permission -> permission.getValue() != null)
+                .map(permisson -> new SimpleGrantedAuthority(permisson.getValue()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return umsAdmin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return umsAdmin.getUsername();
     }
 
     @Override
@@ -62,6 +63,6 @@ public class UserDTO implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return umsAdmin.getStatus().equals(1);
     }
 }
