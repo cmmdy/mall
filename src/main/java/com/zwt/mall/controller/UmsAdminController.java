@@ -1,15 +1,21 @@
 package com.zwt.mall.controller;
 
+import com.zwt.mall.entity.UmsPermission;
 import com.zwt.mall.service.UmsAdminService;
-import com.zwt.mall.common.CommonResult;
+import com.zwt.mall.common.api.CommonResult;
 import com.zwt.mall.entity.UmsAdmin;
-import com.zwt.mall.common.CommonPage;
+import com.zwt.mall.common.api.CommonPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jdk.nashorn.internal.parser.Token;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,11 +33,16 @@ import lombok.AllArgsConstructor;
 @Validated
 @Slf4j
 @RestController
-@AllArgsConstructor
-@RequestMapping("umsAdmin")
+@RequestMapping("/umsAdmin")
 public class UmsAdminController {
     @Autowired
     private UmsAdminService umsAdminService;
+
+    @Value("${jwt.tokenHeader}")
+    private String tokenHeader;
+
+    @Value("${jwt.tokenHead}")
+    private String tokenHead;
 
     @ApiOperation("UmsAdmin表获取所有")
     @GetMapping(value = "listAll")
@@ -43,7 +54,7 @@ public class UmsAdminController {
     @ApiOperation("UmsAdmin表添加")
     @PostMapping(value = "/create")
     @ResponseBody
-    public CommonResult createBrand(@RequestBody UmsAdmin umsAdmin) {
+    public CommonResult createBrand(@RequestBody  UmsAdmin umsAdmin) {
         CommonResult commonResult;
         boolean success = umsAdminService.save(umsAdmin);
         if (success) {
@@ -76,7 +87,7 @@ public class UmsAdminController {
     @ApiOperation("UmsAdmin表根据ID删除")
     @DeleteMapping(value = "/delete/{id}")
     @ResponseBody
-    public CommonResult deleteBrand(@PathVariable("id") Long id) {
+    public CommonResult deleteBrand(@Validated @PathVariable("id") Long id) {
         boolean success = umsAdminService.removeById(id);
         if (success) {
             log.debug("deleteBrand success :id={}", id);
@@ -90,8 +101,8 @@ public class UmsAdminController {
     @ApiOperation("UmsAdmin表分页查询")
     @GetMapping(value = "/list")
     @ResponseBody
-    public CommonResult<CommonPage<UmsAdmin>> listBrand(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                                        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+    public CommonResult<CommonPage<UmsAdmin>> listBrand(@Validated @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                                        @Validated @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         Page<UmsAdmin> page = new Page(pageNum, pageSize);
         List<UmsAdmin> brandList = umsAdminService.page(page).getRecords();
         return CommonResult.success(CommonPage.restPage(brandList));
@@ -103,4 +114,41 @@ public class UmsAdminController {
     public CommonResult<UmsAdmin> brand(@PathVariable("id") Long id) {
         return CommonResult.success(umsAdminService.getById(id));
     }
+
+
+    @ApiOperation("注册")
+    @PostMapping(value = "/register")
+    @ResponseBody
+    public CommonResult<UmsAdmin> register(@Validated @RequestBody UmsAdmin umsAdmin, BindingResult result) {
+        return umsAdminService.register(umsAdmin);
+    }
+
+
+    @ApiOperation("登录")
+    @PostMapping(value = "/login")
+    @ResponseBody
+    public CommonResult<Map<String, String>> login(@Validated @RequestParam(value = "username") String username,
+                                                   @Validated @RequestParam(value = "password") String password) {
+        String token = umsAdminService.login(username, password);
+        if (token != null) {
+            Map<String, String> tokenMap = new HashMap<>();
+            tokenMap.put("token", token);
+            tokenMap.put("tokenHead", tokenHead);
+            return CommonResult.success(tokenMap);
+        } else {
+            return CommonResult.validateFailed("用户名或密码错误");
+        }
+
+    }
+
+    @ApiOperation("获取用户所有权限")
+    @GetMapping(value = "/permission/{adminId}")
+    @ResponseBody
+    public CommonResult<List<UmsPermission>> getPermission(@PathVariable("adminId") Long id) {
+        List<UmsPermission> permissionList = umsAdminService.getPermissionListById(id);
+        return CommonResult.success(permissionList);
+
+    }
+
+
 }

@@ -1,10 +1,11 @@
 package com.zwt.mall.controller;
 
 import com.zwt.mall.service.PmsBrandService;
-import com.zwt.mall.common.CommonResult;
+import com.zwt.mall.common.api.CommonResult;
 import com.zwt.mall.entity.PmsBrand;
-import com.zwt.mall.common.CommonPage;
+import com.zwt.mall.common.api.CommonPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,12 @@ import lombok.AllArgsConstructor;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("pmsBrand")
+@RequestMapping("/pmsBrand")
 public class PmsBrandController {
     @Autowired
     private PmsBrandService pmsBrandService;
 
+    @PreAuthorize("hasAuthority('pms:brand:read')")
     @ApiOperation("PmsBrand表获取所有")
     @GetMapping(value = "listAll")
     @ResponseBody
@@ -40,6 +42,7 @@ public class PmsBrandController {
         return CommonResult.success(pmsBrandService.list());
     }
 
+    @PreAuthorize("hasAuthority('pms:brand:create')")
     @ApiOperation("PmsBrand表添加")
     @PostMapping(value = "/create")
     @ResponseBody
@@ -56,6 +59,7 @@ public class PmsBrandController {
         return commonResult;
     }
 
+    @PreAuthorize("hasAuthority('pms:brand:update')")
     @ApiOperation("PmsBrand表根据ID更新")
     @PutMapping(value = "/update/{id}")
     @ResponseBody
@@ -73,6 +77,7 @@ public class PmsBrandController {
     }
 
 
+    @PreAuthorize("hasAuthority('pms:brand:delete')")
     @ApiOperation("PmsBrand表根据ID删除")
     @DeleteMapping(value = "/delete/{id}")
     @ResponseBody
@@ -87,6 +92,7 @@ public class PmsBrandController {
         }
     }
 
+    @PreAuthorize("hasAuthority('pms:brand:read')")
     @ApiOperation("PmsBrand表分页查询")
     @GetMapping(value = "/list")
     @ResponseBody
@@ -97,6 +103,7 @@ public class PmsBrandController {
         return CommonResult.success(CommonPage.restPage(brandList));
     }
 
+    @PreAuthorize("hasAuthority('pms:brand:read')")
     @ApiOperation("PmsBrand表根据ID获得")
     @GetMapping(value = "/{id}")
     @ResponseBody

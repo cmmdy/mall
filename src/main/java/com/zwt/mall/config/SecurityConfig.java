@@ -1,6 +1,11 @@
 package com.zwt.mall.config;
 
 import com.zwt.mall.components.JwtAuthenticationTokenFilter;
+import com.zwt.mall.components.RestAuthenticationEntryPoint;
+import com.zwt.mall.components.RestfulAccessDeniedHandler;
+import com.zwt.mall.dto.UserDTO;
+import com.zwt.mall.entity.UmsAdmin;
+import com.zwt.mall.entity.UmsPermission;
 import com.zwt.mall.service.UmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,17 +13,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author zhouwentao
@@ -28,12 +36,19 @@ import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
     private UmsAdminService umsAdminService;
+
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
 
     @Bean
     @Override
@@ -58,16 +73,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js",
                         "/swagger-resources/**",
+                        "/swagger-ui.html/**",
                         "/v2/api-docs/**"
                 )
                 .permitAll()
-                .antMatchers("/admin/login", "admin/register")
+                .antMatchers("/umsAdmin/login", "/umsAdmin/register")
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
                 //调试用
-                .antMatchers("/**")
-                .permitAll()
+//                .antMatchers("/**")
+//                .permitAll()
                 .anyRequest()
                 .authenticated();
 
@@ -75,9 +91,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //禁用缓存
         http.headers().cacheControl();
 
-        http.addFilterBefore(jwtautofi)
+        //登录拦截器
+        http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        //添加自定义未授权和未登录结果返回
+        http.exceptionHandling()
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                .authenticationEntryPoint(restAuthenticationEntryPoint);
 
 
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService())
+                .passwordEncoder(pw());
     }
 
     @Bean
@@ -85,7 +113,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
     public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
         return new JwtAuthenticationTokenFilter();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            UmsAdmin umsAdmin = umsAdminService.getAdminByUserName(username);
+            if (umsAdmin != null) {
+                List<UmsPermission> permissionList = umsAdminService.getPermissionListById(umsAdmin.getId());
+                return new UserDTO(umsAdmin, permissionList);
+            }
+            throw new UsernameNotFoundException("用户名或密码错误");
+        };
+
     }
 }

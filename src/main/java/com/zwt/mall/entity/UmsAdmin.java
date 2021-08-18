@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -27,9 +28,11 @@ public class UmsAdmin extends Model<UmsAdmin> implements Serializable {
     private Long id;
 
     @ApiModelProperty("$column.comment")
+    @NotNull(message = "不能为空")
     private String username;
 
     @ApiModelProperty("$column.comment")
+    @NotNull(message = "不能为空")
     private String password;
 
     @ApiModelProperty("头像")

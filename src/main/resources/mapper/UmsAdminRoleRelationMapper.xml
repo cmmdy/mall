@@ -8,4 +8,27 @@
         <result property="roleId" column="role_id" jdbcType="INTEGER"/>
     </resultMap>
 
+
+    <select id="getPermissionListById" resultMap="com.zwt.mall.mapper.UmsPermissionMapper.UmsPermissionMap">
+
+        SELECT p.*
+        FROM ums_admin_role_relation ar
+                 LEFT JOIN ums_role_permission_relation rp ON ar.role_id = rp.role_id
+                 LEFT JOIN ums_permission p ON rp.permission_id = p.id
+        WHERE ar.admin_id = #{id}
+          AND p.id IS NOT NULL
+
+          AND p.id NOT IN (SELECT p.id
+                           FROM ums_admin_permission_relation up
+                                    LEFT JOIN ums_permission p ON up.permission_id = p.id
+                           WHERE up.admin_id = #{id}
+                             AND up.type = 1)
+
+        UNION
+        SELECT p.*
+        FROM ums_admin_permission_relation up
+                 LEFT JOIN ums_permission p ON up.permission_id = p.id
+        WHERE up.admin_id = #{id}
+          AND up.type = 0
+    </select>
 </mapper>

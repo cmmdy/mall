@@ -1,9 +1,9 @@
 package com.zwt.mall.controller;
 
 import com.zwt.mall.service.UmsPermissionService;
-import com.zwt.mall.common.CommonResult;
+import com.zwt.mall.common.api.CommonResult;
 import com.zwt.mall.entity.UmsPermission;
-import com.zwt.mall.common.CommonPage;
+import com.zwt.mall.common.api.CommonPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

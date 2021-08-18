@@ -30,69 +30,69 @@ import java.util.List;
  * @Date 2021-08-12-23:01
  * @Email zhouwt@shuyilink.com
  */
-@Configuration
-@EnableAuthorizationServer
-public class AuthenticationServer extends AuthorizationServerConfigurerAdapter {
+//@Configuration
+//@EnableAuthorizationServer
+//public class AuthenticationServer extends AuthorizationServerConfigurerAdapter {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UmsAdminService userDetailsService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private AccessTokenConverter accessTokenConverter;
-
-    @Autowired
-    @Qualifier("jwtTokenStore")
-    private TokenStore tokenStore;
-
-    @Autowired
-    private TokenEnhancer tokenEnhancer;
-
-    @Autowired
-    private JwtAccessTokenConverter jwtAccessTokenConverter;
-
-    @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-
-        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-
-
-        List<TokenEnhancer> delegates = new ArrayList<>();
-        delegates.add(tokenEnhancer);
-        delegates.add(jwtAccessTokenConverter);
-        tokenEnhancerChain.setTokenEnhancers(delegates);
-        endpoints.userDetailsService(userDetailsService)
-                .authenticationManager(authenticationManager)
-                .tokenStore(tokenStore)
-                .accessTokenConverter(accessTokenConverter)
-                .tokenEnhancer(tokenEnhancerChain);
-
-
-    }
-
-    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient("admin")
-                .secret(passwordEncoder.encode("123456"))
-//                .redirectUris("https://www.baidu.com")
-                .scopes("all")
-                .accessTokenValiditySeconds(36000)
-                .refreshTokenValiditySeconds(360000)
-                .authorizedGrantTypes("password", "refresh_token");
-
-    }
-
-    /**
-     * 处理授权后的安全策略
-     *
-     * @param security
-     * @throws Exception
-     */
-    @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.allowFormAuthenticationForClients();
-    }
-}
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private UmsAdminService userDetailsService;
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
+//    @Autowired
+//    private AccessTokenConverter accessTokenConverter;
+//
+//    @Autowired
+//    @Qualifier("jwtTokenStore")
+//    private TokenStore tokenStore;
+//
+//    @Autowired
+//    private TokenEnhancer tokenEnhancer;
+//
+//    @Autowired
+//    private JwtAccessTokenConverter jwtAccessTokenConverter;
+//
+//    @Override
+//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+//
+//        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+//
+//
+//        List<TokenEnhancer> delegates = new ArrayList<>();
+//        delegates.add(tokenEnhancer);
+//        delegates.add(jwtAccessTokenConverter);
+//        tokenEnhancerChain.setTokenEnhancers(delegates);
+//        endpoints.userDetailsService(userDetailsService)
+//                .authenticationManager(authenticationManager)
+//                .tokenStore(tokenStore)
+//                .accessTokenConverter(accessTokenConverter)
+//                .tokenEnhancer(tokenEnhancerChain);
+//
+//
+//    }
+//
+//    @Override
+//    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+//        clients.inMemory()
+//                .withClient("admin")
+//                .secret(passwordEncoder.encode("123456"))
+////                .redirectUris("https://www.baidu.com")
+//                .scopes("all")
+//                .accessTokenValiditySeconds(36000)
+//                .refreshTokenValiditySeconds(360000)
+//                .authorizedGrantTypes("password", "refresh_token");
+//
+//    }
+//
+//    /**
+//     * 处理授权后的安全策略
+//     *
+//     * @param security
+//     * @throws Exception
+//     */
+//    @Override
+//    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+//        security.allowFormAuthenticationForClients();
+//    }
+//}

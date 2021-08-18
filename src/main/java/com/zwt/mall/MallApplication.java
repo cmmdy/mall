@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @SpringBootApplication
 @MapperScan("com.zwt.mall.mapper")
-@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 public class MallApplication {
 
     public static void main(String[] args) {

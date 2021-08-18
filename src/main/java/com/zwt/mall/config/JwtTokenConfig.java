@@ -13,27 +13,27 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
  * @Email zhouwt@shuyilink.com
  */
 
-@Configuration
-public class JwtTokenConfig {
-
-    @Bean
-    public TokenStore jwtTokenStore() {
-        return new JwtTokenStore(jwtAccessTokenConverter());
-    }
-
-
-
-
-    @Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-        jwtAccessTokenConverter.setSigningKey("xxxx");
-        return jwtAccessTokenConverter;
-    }
-
-
-    @Bean
-    public TokenEnhancer tokenEnhancer() {
-        return new MyTokenEnhancer();
-    }
-}
+//@Configuration
+//public class JwtTokenConfig {
+//
+//    @Bean
+//    public TokenStore jwtTokenStore() {
+//        return new JwtTokenStore(jwtAccessTokenConverter());
+//    }
+//
+//
+//
+//
+//    @Bean
+//    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+//        JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
+//        jwtAccessTokenConverter.setSigningKey("xxxx");
+//        return jwtAccessTokenConverter;
+//    }
+//
+//
+//    @Bean
+//    public TokenEnhancer tokenEnhancer() {
+//        return new MyTokenEnhancer();
+//    }
+//}

@@ -1,6 +1,6 @@
 package com.zwt.mall.controller;
 
-import com.zwt.mall.common.CommonResult;
+import com.zwt.mall.common.api.CommonResult;
 import com.zwt.mall.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

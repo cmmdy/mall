@@ -13,12 +13,12 @@ import java.util.Map;
  * @Date 2021-08-13-5:04 下午
  * @Email zhouwt@shuyilink.com
  */
-public class MyTokenEnhancer implements TokenEnhancer {
-   @Override
-   public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-      Map<String, Object> map = new HashMap<>();
-      map.put("enhance", "fuck");
-      ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(map);
-      return accessToken;
-   }
-}
+//public class MyTokenEnhancer implements TokenEnhancer {
+//   @Override
+//   public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+//      Map<String, Object> map = new HashMap<>();
+//      map.put("enhance", "fuck");
+//      ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(map);
+//      return accessToken;
+//   }
+//}

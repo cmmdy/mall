@@ -23,8 +23,8 @@ public class UserDTO implements UserDetails {
     private UmsAdmin umsAdmin;
     private List<UmsPermission> permissionList;
 
-    public UserDTO(UmsAdmin username, List<UmsPermission> grantedAuthorityList) {
-        this.umsAdmin = username;
+    public UserDTO(UmsAdmin umsAdmin, List<UmsPermission> grantedAuthorityList) {
+        this.umsAdmin = umsAdmin;
         this.permissionList = grantedAuthorityList;
     }
 

@@ -1,4 +1,4 @@
-package com.zwt.mall.common;
+package com.zwt.mall.common.api;
 
 
 /**

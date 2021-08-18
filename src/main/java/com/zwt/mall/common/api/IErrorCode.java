@@ -1,4 +1,4 @@
-package com.zwt.mall.common;
+package com.zwt.mall.common.api;
 
 /**
  * 封装API的错误码

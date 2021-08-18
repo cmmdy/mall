@@ -1,6 +1,6 @@
 package com.zwt.mall.service;
 
-import com.zwt.mall.common.CommonResult;
+import com.zwt.mall.common.api.CommonResult;
 
 /**
  * @Author zhouwentao

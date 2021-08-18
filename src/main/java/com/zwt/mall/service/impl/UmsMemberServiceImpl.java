@@ -1,6 +1,6 @@
 package com.zwt.mall.service.impl;
 
-import com.zwt.mall.common.CommonResult;
+import com.zwt.mall.common.api.CommonResult;
 import com.zwt.mall.service.RedisService;
 import com.zwt.mall.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
